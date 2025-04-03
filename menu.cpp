@@ -12,8 +12,7 @@ int exit() {
 }
 
 void AskMenu(bool state) {
-  exist_file();
-
+  if (exist_file()){
   std::cout << "What do you want to do?\n";
   std::cout << "1. See my To-do List\n";
   std::cout << "2. Add a new To-do\n";
@@ -22,6 +21,8 @@ void AskMenu(bool state) {
   if (state) {
     AskAnswer();
   }
+  };
+
 }
 
 void AskAnswer() {
@@ -35,13 +36,13 @@ void AskAnswer() {
   }
 
   switch (option) {
-    case '1':
+  case '1':
     readToDoList();
     break;
-    case '2':
+  case '2':
     newToDoTask();
     break;
-    case '3':
+  case '3':
     break;
   }
   std::cout << "\n";
@@ -54,13 +55,13 @@ bool AskAnswerNewFile() {
   while (option != '1' && option != '2') {
     std::cout << "Option Not valid, please choose again\n";
     if (FirstTimeQuestion(false)) {
-  std::cout << "--> ";
+      std::cout << "--> ";
       std::cin >> option;
     } else {
       break;
     }
   }
-      std::cout << "\n";
+  std::cout << "\n";
 
   if (option == '1') {
     return true;

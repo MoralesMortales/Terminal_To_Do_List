@@ -3,7 +3,7 @@
 
 #include "fileConfig.h"
 
-void exist_file();
+bool exist_file();
 void createFile();
 void AskMenu(bool state);
 

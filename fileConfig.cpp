@@ -18,13 +18,13 @@ bool file_exists(std::string &fileToAnalize) {
   return file.good();
 }
 
-void exist_file() {
+bool exist_file() {
   std::string todoList = "ToDo.txt";
   if (file_exists(todoList)) {
-  }
-
-  else {
+    return true;
+  } else {
     if (!FirstTimeQuestion(true)) {
+      return false;
     } else {
       try {
         createFile();
@@ -37,6 +37,9 @@ void exist_file() {
         std::cerr << "Unknown error occurred while creating file.\n";
       }
       std::cout << "File Created Successfully!\n\n";
+      return true;
     }
   }
+  // never gonna use this
+  return false;
 }
