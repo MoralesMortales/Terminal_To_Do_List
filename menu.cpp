@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "toDoActions.h"
+
 void AskAnswer();
 
 int exit() {
@@ -31,6 +33,17 @@ void AskAnswer() {
     AskMenu(false);
     std::cin >> option;
   }
+
+  switch (option) {
+    case '1':
+    readToDoList();
+    break;
+    case '2':
+    newToDoTask();
+    break;
+    case '3':
+    break;
+  }
   std::cout << "\n";
 }
 
@@ -38,7 +51,6 @@ bool AskAnswerNewFile() {
   char option;
   std::cout << "--> ";
   std::cin >> option;
-
   while (option != '1' && option != '2') {
     std::cout << "Option Not valid, please choose again\n";
     if (FirstTimeQuestion(false)) {
