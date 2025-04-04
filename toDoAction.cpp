@@ -83,10 +83,8 @@ void deleteToDo() {
   inFile.close();
   int counter = lines.size();
 
-  std::cout << "There are " << counter << " lines.\n";
-
   if (counter == 0) {
-   std::cout << "There's not any ToDo!\n"; 
+   std::cout << "\nYou don't have ToDo's created! \n\n"; 
   }
   else {
     
