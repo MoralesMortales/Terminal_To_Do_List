@@ -1,7 +1,11 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <limits>
 #include <ostream>
 #include <string>
+#include <vector>
 
 #include "menu.h"
 #include "toDoActions.h"
@@ -16,6 +20,7 @@ void readToDoList() {
 
   std::string line;
   bool hasTasks = false;
+  int counter = 0;
 
   while (std::getline(inputFile, line)) {
     size_t start = line.find("--%\"");
@@ -23,10 +28,25 @@ void readToDoList() {
 
     if (start != std::string::npos && end != std::string::npos) {
       std::string content = line.substr(start + 4, end - (start + 4));
-      std::cout << "Tarea: " << content << std::endl;
+      std::cout << "\033[31m(" << counter + 1 << ") \033[0m";
+      std::cout << content << std::endl;
+      counter++;
+      hasTasks = true;
     }
   }
   inputFile.close();
+
+  if (!hasTasks) {
+    std::cout << "\033[31m";
+    std::cout << "No hay tareas en la lista.\n";
+    std::cout << "\033[0m";
+  }
+
+  std::cout << "\nPress Enter to continue...\n";
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  std::cin.get();
+
+  AskMenu(true);
 }
 
 void newToDoTask() {
@@ -46,5 +66,54 @@ void newToDoTask() {
   outputFile << "--%\"" << task << "\"%\n";
   outputFile.close();
 
+  AskMenu(true);
+}
+
+void deleteToDo() {
+  std::ifstream inFile("ToDo.txt");
+  std::vector<std::string> lines;
+  std::string line;
+
+  while (std::getline(inFile, line)) {
+    if (!line.empty()) { 
+      lines.push_back(line);
+    }
+  }
+
+  inFile.close();
+  int counter = lines.size();
+
+  std::cout << "There are " << counter << " lines.\n";
+
+  if (counter == 0) {
+   std::cout << "There's not any ToDo!\n"; 
+  }
+  else {
+    
+  
+  
+  int lineToDelete;
+
+  do {
+    std::cout << "Which line would you like to delete (1-" << counter << ")?: ";
+    std::cin >> lineToDelete;
+  } while (lineToDelete < 1 || lineToDelete > counter);
+
+  int currentLine = 1;
+  std::ofstream outFile("ToDo.txt");
+
+  for (const std::string &l : lines) {
+    if (currentLine == lineToDelete){
+    std::cout << "Deleting " << l << std::endl;
+    } 
+    else {
+      outFile << l << "\n";
+    }
+    currentLine++;
+  }
+  outFile.close();
+
+  std::cout << "\nSuccessfully Erased\n\n";
+  }
   AskMenu(true);
 }

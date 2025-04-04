@@ -12,26 +12,34 @@ int exit() {
 }
 
 void AskMenu(bool state) {
-  if (exist_file()){
-  std::cout << "What do you want to do?\n";
-  std::cout << "1. See my To-do List\n";
-  std::cout << "2. Add a new To-do\n";
-  std::cout << "3. Delete a To-do\n";
+  if (exist_file()) {
 
-  if (state) {
-    AskAnswer();
-  }
+    std::cout << "\033[33m";
+    std::cout << "What do you want to do?\n";
+    std::cout << "\033[0m";
+
+    std::cout << "\033[31m1.\033[0m See my To-do List\n";
+    std::cout << "\033[31m2.\033[0m Add a new To-do\n";
+    std::cout << "\033[31m3.\033[0m Delete a To-do\n";
+    std::cout << "\033[31m4.\033[0m Edit a To-do\n";
+    std::cout << "\033[31m5.\033[0m Exit\n";
+
+    if (state) {
+      AskAnswer();
+    }
   };
-
 }
 
 void AskAnswer() {
   char option;
+  std::cout << "--> ";
   std::cin >> option;
 
-  while (option != '1' && option != '2' && option != '3') {
+  while (option != '1' && option != '2' && option != '3' && option != '4' &&
+         option != '5') {
     std::cout << "Option Not valid, please choose again\n\n";
     AskMenu(false);
+    std::cout << "--> ";
     std::cin >> option;
   }
 
@@ -43,6 +51,11 @@ void AskAnswer() {
     newToDoTask();
     break;
   case '3':
+    deleteToDo();
+    break;
+  case '4':
+    break;
+  case '5':
     break;
   }
   std::cout << "\n";
