@@ -1,0 +1,67 @@
+name: Cross-Platform CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Opcional: prueba con diferentes compiladores
+        compiler: [g++, clang++, cl]
+        exclude:
+          - os: windows-latest
+            compiler: clang++
+          - os: macos-latest
+            compiler: cl
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup environment
+      run: |
+        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          if [[ "${{ matrix.compiler }}" == "clang++" ]]; then
+            sudo apt-get install -y clang
+          fi
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          brew update
+          if [[ "${{ matrix.compiler }}" == "clang++" ]]; then
+            brew install llvm
+          fi
+        fi
+
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config Release
+
+    - name: Run basic checks
+      run: |
+        cd build
+        # Verifica que el ejecutable existe
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          if [ -f "Release/ToDoApp.exe" ]; then
+            echo "Executable exists"
+          else
+            echo "Executable not found!"
+            exit 1
+          fi
+        else
+          if [ -f "ToDoApp" ]; then
+            echo "Executable exists"
+          else
+            echo "Executable not found!"
+            exit 1
+          fi
+        fi

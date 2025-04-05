@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/ToDoApp.dir/main.cpp.o CMakeFiles/ToDoApp.dir/src/menu.cpp.o CMakeFiles/ToDoApp.dir/src/fileConfig.cpp.o CMakeFiles/ToDoApp.dir/src/toDoAction.cpp.o -o ToDoApp

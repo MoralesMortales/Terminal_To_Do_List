@@ -1,0 +1,7 @@
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/ToDoApp.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/edit_cache.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/rebuild_cache.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/list_install_components.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/install.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/install/local.dir
+/home/lup/Desktop/Lup/Projects/Terminal_To_Do_List/build/CMakeFiles/install/strip.dir

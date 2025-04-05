@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-int main(int argc, char *argv[]) {
+int main() {
   std::cout << "Welcome to Your To-do List Maker.\n\n";
   AskMenu(true);
   
