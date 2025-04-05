@@ -15,50 +15,54 @@ jobs:
           - os: macos-latest
             compiler: cl
           - os: ubuntu-latest
-            compiler: cl  # ❗ NUEVO: excluye `cl` en Ubuntu (crítico)
+            compiler: cl  # Excluir `cl` en Ubuntu
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        shell: bash
-        run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            sudo apt-get update
-            sudo apt-get install -y build-essential cmake
-            if [ "${{ matrix.compiler }}" = "clang++" ]; then
-              sudo apt-get install -y clang
-            fi
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            brew update
-            brew install cmake --formula
-            if [ "${{ matrix.compiler }}" = "clang++" ]; then
-              brew install llvm
-            fi
+    - name: Install dependencies
+      shell: bash  # Usamos bash en todos los OS
+      run: |
+        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+          if [ "${{ matrix.compiler }}" = "clang++" ]; then
+            sudo apt-get install -y clang
           fi
-
-      - name: Create build directory
-        run: mkdir build
-
-      - name: Configure CMake
-        run: |
-          cd build
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            cmake .. -G "Visual Studio 16 2019" -A x64
-          else
-            cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+        elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+          brew update
+          brew install cmake --formula
+          if [ "${{ matrix.compiler }}" = "clang++" ]; then
+            brew install llvm
           fi
+        fi
 
-      - name: Build project
-        run: |
-          cd build
-          cmake --build . --config Release
+    - name: Create build directory
+      shell: bash  # Aseguramos que todos los pasos sean bash
+      run: mkdir build
 
-      - name: Verify executable
-        run: |
-          cd build
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            if [ ! -f "Release/ToDoApp.exe" ]; then echo "Executable not found!"; exit 1; fi
-          else
-            if [ ! -f "ToDoApp" ]; then echo "Executable not found!"; exit 1; fi
-          fi
+    - name: Configure CMake
+      shell: bash  # Usamos bash en todos los OS
+      run: |
+        cd build
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          cmake .. -G "MinGW Makefiles"  # Asegurate de tener MinGW instalado
+        else
+          cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+        fi
+
+    - name: Build project
+      shell: bash  # Usamos bash en todos los OS
+      run: |
+        cd build
+        cmake --build . --config Release
+
+    - name: Verify executable
+      shell: bash  # Aseguramos que todos los pasos sean bash
+      run: |
+        cd build
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          if [ ! -f "Release/ToDoApp.exe" ]; then echo "Windows executable missing!"; exit 1; fi
+        else
+          if [ ! -f "ToDoApp" ]; then echo "Executable missing!"; exit 1; fi
+        fi
