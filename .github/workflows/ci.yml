@@ -18,29 +18,25 @@ jobs:
             compiler: g++
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
     - name: Setup environment
+      shell: bash
       run: |
-        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
           sudo apt-get update
           sudo apt-get install -y build-essential
-          if [[ "${{ matrix.compiler }}" == "clang++" ]]; then
-            sudo apt-get install -y clang
-          fi
-        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          [ "${{ matrix.compiler }}" = "clang++" ] && sudo apt-get install -y clang
+        elif [ "${{ matrix.os }}" = "macos-latest" ]; then
           brew update
-          if [[ "${{ matrix.compiler }}" == "clang++" ]]; then
-            brew install llvm
-          fi
+          [ "${{ matrix.compiler }}" = "clang++" ] && brew install llvm
         fi
 
     - name: Configure CMake
       run: |
         mkdir build
         cd build
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+        if [ "${{ runner.os }}" = "Windows" ]; then
           cmake .. -G "Visual Studio 16 2019" -A x64
         else
           cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
@@ -49,27 +45,13 @@ jobs:
     - name: Build
       run: |
         cd build
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          cmake --build . --config Release
-        else
-          cmake --build .
-        fi
+        cmake --build . --config Release
 
     - name: Verify executable
       run: |
         cd build
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          if [[ -f "Release/ToDoApp.exe" ]]; then
-            echo "Windows executable exists"
-          else
-            echo "Windows executable not found!"
-            exit 1
-          fi
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          [ -f "Release/ToDoApp.exe" ] || (echo "Windows executable missing!" && exit 1)
         else
-          if [[ -f "ToDoApp" ]]; then
-            echo "Unix executable exists"
-          else
-            echo "Unix executable not found!"
-            exit 1
-          fi
+          [ -f "ToDoApp" ] || (echo "Unix executable missing!" && exit 1)
         fi
