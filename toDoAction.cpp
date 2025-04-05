@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -75,7 +74,7 @@ void deleteToDo() {
   std::string line;
 
   while (std::getline(inFile, line)) {
-    if (!line.empty()) { 
+    if (!line.empty()) {
       lines.push_back(line);
     }
   }
@@ -84,34 +83,84 @@ void deleteToDo() {
   int counter = lines.size();
 
   if (counter == 0) {
-   std::cout << "\nYou don't have ToDo's created! \n\n"; 
-  }
-  else {
-    
-  
-  
-  int lineToDelete;
+    std::cout << "\nYou don't have ToDo's created! \n\n";
+  } else {
 
-  do {
-    std::cout << "Which line would you like to delete (1-" << counter << ")?: ";
-    std::cin >> lineToDelete;
-  } while (lineToDelete < 1 || lineToDelete > counter);
+    int lineToDelete;
 
-  int currentLine = 1;
-  std::ofstream outFile("ToDo.txt");
+    do {
+      std::cout << "Which line would you like to delete (1-" << counter
+                << ")?: ";
+      std::cin >> lineToDelete;
+    } while (lineToDelete < 1 || lineToDelete > counter);
 
-  for (const std::string &l : lines) {
-    if (currentLine == lineToDelete){
-    std::cout << "Deleting " << l << std::endl;
-    } 
-    else {
-      outFile << l << "\n";
+    int currentLine = 1;
+    std::ofstream outFile("ToDo.txt");
+
+    for (const std::string &l : lines) {
+      if (currentLine == lineToDelete) {
+        std::cout << "Deleting " << l << std::endl;
+      } else {
+        outFile << l << "\n";
+      }
+      currentLine++;
     }
-    currentLine++;
-  }
-  outFile.close();
+    outFile.close();
 
-  std::cout << "\nSuccessfully Erased\n\n";
+    std::cout << "\nSuccessfully Erased\n\n";
+  }
+  AskMenu(true);
+}
+
+void editToDo() {
+  std::ifstream inFile("ToDo.txt");
+  std::vector<std::string> lines;
+  std::string line;
+
+  while (std::getline(inFile, line)) {
+    if (!line.empty()) {
+      lines.push_back(line);
+    }
+  }
+
+  inFile.close();
+  int counter = lines.size();
+
+  if (counter == 0) {
+    std::cout << "\nYou don't have ToDo's created! \n\n";
+  } else {
+
+    int lineToDelete;
+
+    do {
+      std::cout << "Which To-Do would you like to edit (1-" << counter << ")?: ";
+      std::cin >> lineToDelete;
+    } while (lineToDelete < 1 || lineToDelete > counter);
+
+    int currentLine = 1;
+    std::ofstream outFile("ToDo.txt");
+
+    std::string input;
+
+    for (std::string &l : lines) {
+      if (currentLine == lineToDelete) {
+
+        std::string dummy;
+        std::getline(std::cin, dummy);
+
+        std::cout << "Editing: "<< l << std::endl;
+        std::getline(std::cin, input);
+
+        outFile << "--%\"" << input  << "\"%\n";
+
+      } else {
+        outFile << l << "\n";
+      }
+      currentLine++;
+    }
+    outFile.close();
+
+    std::cout << "\nSuccessfully Erased\n\n";
   }
   AskMenu(true);
 }

@@ -54,6 +54,7 @@ void AskAnswer() {
     deleteToDo();
     break;
   case '4':
+      editToDo();
     break;
   case '5':
     break;
