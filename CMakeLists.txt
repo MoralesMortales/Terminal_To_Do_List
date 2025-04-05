@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # Para herramientas de análisis de códi
 
 # Configuración de warnings
 if(MSVC)
-    add_compile_options(/W4 /WX /permissive-)
+      add_compile_options(/W4 /WX /permissive- /wd4267)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
