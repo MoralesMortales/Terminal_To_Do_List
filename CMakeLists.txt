@@ -28,7 +28,7 @@ set(HEADERS
 )
 
 # Ejecutable principal
-add_executable(ToDoApp ${SOURCES} ${HEADERS})
+add_executable(ToDoApp ${SOURCES})
 
 # Directorios de inclusión (versión moderna)
 target_include_directories(ToDoApp 
