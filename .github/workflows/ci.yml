@@ -16,50 +16,44 @@ jobs:
             compiler: cl
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup environment
-      shell: bash
-      run: |
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          sudo apt-get update
-          sudo apt-get install -y build-essential
-          [ "${{ matrix.compiler }}" = "clang++" ] && sudo apt-get install -y clang
-        elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-          brew update
-          [ "${{ matrix.compiler }}" = "clang++" ] && brew install llvm
-        fi
-
-    - name: Configure CMake
-      run: |
-        mkdir build
-        cd build
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          cmake .. -G "Visual Studio 16 2019" -A x64
-        else
-          cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
-        fi
-
-    - name: Build
-      run: |
-        cd build
-        cmake --build . --config Release
-
-    - name: Verify executable
-      run: |
-        cd build
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          if [ -f "Release/ToDoApp.exe" ]; then
-            echo "Windows executable exists"
-          else
-            echo "Windows executable not found!"
-            exit 1
+      - name: Install dependencies
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            sudo apt-get update
+            sudo apt-get install -y build-essential cmake
+            [ "${{ matrix.compiler }}" = "clang++" ] && sudo apt-get install -y clang
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            brew update
+            brew install cmake
+            [ "${{ matrix.compiler }}" = "clang++" ] && brew install llvm
           fi
-        else
-          if [ -f "ToDoApp" ]; then
-            echo "Unix executable exists"
+
+      - name: Create build directory
+        run: mkdir build
+
+      - name: Configure CMake
+        run: |
+          cd build
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cmake .. -G "Visual Studio 16 2019" -A x64
           else
-            echo "Unix executable not found!"
-            exit 1
+            cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           fi
-        fi
+
+      - name: Build project
+        run: |
+          cd build
+          cmake --build . --config Release
+
+      - name: Verify executable
+        run: |
+          cd build
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            if [ ! -f "Release/ToDoApp.exe" ]; then echo "Executable not found!"; exit 1; fi
+          else
+            if [ ! -f "ToDoApp" ]; then echo "Executable not found!"; exit 1; fi
+          fi
