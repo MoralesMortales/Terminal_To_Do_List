@@ -148,8 +148,14 @@ void editToDo() {
         std::string dummy;
         std::getline(std::cin, dummy);
 
-        std::cout << "Editing: "<< l << std::endl;
+        size_t start = l.find("--%\"");
+        size_t end = l.find("\"%");
+        std::string content = l.substr(start + 4, end - (start + 4));
+
+        std::cout << "Editing: "<< content << std::endl << "---> "; 
         std::getline(std::cin, input);
+
+
 
         outFile << "--%\"" << input  << "\"%\n";
 
