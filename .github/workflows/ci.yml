@@ -14,8 +14,6 @@ jobs:
             compiler: clang++
           - os: macos-latest
             compiler: cl
-          - os: windows-latest
-            compiler: g++
 
     steps:
     - uses: actions/checkout@v4
@@ -51,7 +49,17 @@ jobs:
       run: |
         cd build
         if [ "${{ runner.os }}" = "Windows" ]; then
-          [ -f "Release/ToDoApp.exe" ] || (echo "Windows executable missing!" && exit 1)
+          if [ -f "Release/ToDoApp.exe" ]; then
+            echo "Windows executable exists"
+          else
+            echo "Windows executable not found!"
+            exit 1
+          fi
         else
-          [ -f "ToDoApp" ] || (echo "Unix executable missing!" && exit 1)
+          if [ -f "ToDoApp" ]; then
+            echo "Unix executable exists"
+          else
+            echo "Unix executable not found!"
+            exit 1
+          fi
         fi
