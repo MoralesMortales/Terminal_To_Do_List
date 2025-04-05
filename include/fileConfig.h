@@ -1,5 +1,5 @@
-#ifndef FILECONFIG_H
-#define FILECONFIGH
+#ifndef FILECONFIG
+#define FILECONFIG
 
 bool FirstTimeQuestion(bool state);
 
