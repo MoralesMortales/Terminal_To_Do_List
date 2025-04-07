@@ -7,68 +7,68 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [g++, clang++, cl]
-        exclude:
-          - os: windows-latest
-            compiler: clang++
-          - os: macos-latest
-            compiler: cl
+        include:
           - os: ubuntu-latest
-            compiler: cl  # Excluir `cl` en Ubuntu
+            compiler: g++
+            compiler_name: "GCC"
+            build_dir: "build_gcc"
+          
+          - os: macos-latest
+            compiler: clang++
+            compiler_name: "Clang"
+            build_dir: "build_clang"
+          
+          - os: windows-latest
+            compiler: cl
+            compiler_name: "MSVC"
+            build_dir: "build_msvc"
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      shell: bash  # Usamos bash en todos los OS
+    - name: Install dependencies (${{ matrix.compiler_name }})
+      shell: bash  
       run: |
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake
-          if [ "${{ matrix.compiler }}" = "clang++" ]; then
-            sudo apt-get install -y clang
-          fi
-        elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-          brew update
-          brew install cmake --formula
-          if [ "${{ matrix.compiler }}" = "clang++" ]; then
-            brew install llvm
-          fi
-        fi
+        case "${{ matrix.os }}" in
+          ubuntu-latest)
+            sudo apt-get update
+            sudo apt-get install -y build-essential cmake
+            ;;
+          macos-latest)
+            brew update
+            brew install cmake
+            ;;
+        esac
 
-    - name: Create build directory
-      shell: bash  # Aseguramos que todos los pasos sean bash
-      run: mkdir build
+    - name: Setup MSVC (Windows only)
+      if: matrix.os == 'windows-latest'
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
 
-    - name: Set up Visual Studio Build Tools
-      if: runner.os == 'Windows'
+    - name: Configure CMake (${{ matrix.compiler_name }})
+      shell: bash
       run: |
-        choco install visualstudio2019buildtools --version 16.11.8 -y
-        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-
-    - name: Configure CMake
-      shell: bash  # Usamos bash en todos los OS
-      run: |
-        cd build
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          cmake .. -G "Visual Studio 17 2022" -A x64
+        mkdir -p ${{ matrix.build_dir }}
+        cd ${{ matrix.build_dir }}
+        if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          cmake .. -G "Ninja" -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
         else
-          cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          cmake .. -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
         fi
 
-    - name: Build project
-      shell: bash  # Usamos bash en todos los OS
+    - name: Build project (${{ matrix.compiler_name }})
+      shell: bash
       run: |
-        cd build
+        cd ${{ matrix.build_dir }}
         cmake --build . --config Release
 
-    - name: Verify executable
-      shell: bash  # Aseguramos que todos los pasos sean bash
+    - name: Run tests (${{ matrix.compiler_name }})
+      shell: bash
       run: |
-        cd build
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          if [ ! -f "Release/ToDoApp.exe" ]; then echo "Windows executable missing!"; exit 1; fi
+        cd ${{ matrix.build_dir }}
+        if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          ctest -C Release --output-on-failure
         else
-          if [ ! -f "ToDoApp" ]; then echo "Executable missing!"; exit 1; fi
+          ctest --output-on-failure
         fi
