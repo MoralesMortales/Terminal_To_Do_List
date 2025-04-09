@@ -70,8 +70,7 @@ jobs:
         if [ "${{ matrix.os }}" != "windows-latest" ]; then
           echo 2 | ./ToDoApp
         else
-          ls
-          echo 2 | Debug/ToDoApp.exe
+          echo 2 | ToDoApp.exe
         fi
 
     - name: Run tests (${{ matrix.compiler_name }})
