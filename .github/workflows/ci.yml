@@ -67,12 +67,9 @@ jobs:
       shell: bash
       run: |
         cd ${{ matrix.build_dir }}
-        cd ${{ matrix.build_dir }}
         if [ "${{ matrix.os }}" != "windows-latest" ]; then
           echo 2 | ./ToDoApp
         else
-          echo "=== Contenido del directorio actual ==="
-          ls -la   # Para Linux/macOS/Windows (Git Bash)
           echo 2 | Debug/ToDoApp.exe
         fi
 
