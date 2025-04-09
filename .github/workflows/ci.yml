@@ -73,15 +73,6 @@ jobs:
           echo 2 | Release\ToDoApp.exe
         fi
 
-    - name: Verify Output
-      shell: bash
-      run: |
-        OUTPUT=$(./your_program_executable)
-        if [[ "$OUTPUT" != "Expected Output" ]]; then
-          echo "Error: Unexpected output!"
-        exit 1
-        fi
-
     - name: Run tests (${{ matrix.compiler_name }})
       shell: bash
       run: |
