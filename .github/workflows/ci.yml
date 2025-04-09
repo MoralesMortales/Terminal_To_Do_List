@@ -68,9 +68,9 @@ jobs:
       run: |
         cd ${{ matrix.build_dir }}
         if [ "${{ matrix.os }}" != "windows-latest" ]; then
-          ./your_program_executable
+          ./ToDoApp
         else
-          Release\your_program_executable.exe
+          Release\ToDoApp.exe
         fi
 
     - name: Verify Output
