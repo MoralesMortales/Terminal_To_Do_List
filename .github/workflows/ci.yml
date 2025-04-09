@@ -75,6 +75,7 @@ jobs:
           elif [ -f "Debug/ToDoApp.exe" ]; then
             echo "2" | Debug/ToDoApp.exe
           fi
+        fi
 
     - name: Run tests (${{ matrix.compiler_name }})
       shell: bash
